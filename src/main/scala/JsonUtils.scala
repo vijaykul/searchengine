@@ -7,6 +7,11 @@ import scala.util.parsing.json._
  */
 
 object JsonUtils {
+
+
+  val myConversionFunc = {input : String => input.toInt}
+  JSON.globalNumberParser = myConversionFunc
+
   /** Parses the  Json file.
    *
    *  @param jsonFile Json file path.

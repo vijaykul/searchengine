@@ -74,22 +74,22 @@ class Table[K, C, V] {
    *
    * @return Array containg all the matched rows
    */
-  def select(column: String, value: Any): ArrayBuffer[collection.mutable.HashMap[C, V]] = {
+  def select(column: String, value: Any): Array[collection.mutable.HashMap[C, V]] = {
     var result = new ArrayBuffer[collection.mutable.HashMap[C, V]] ()
     this.table map { case (id, innerMap) =>
       innerMap map {
         case (k, v) => {
           if (column == k) {
             val mtch =  value match {
-              case v1: List[Any] => println("entered here : " + value); v1.asInstanceOf[List[String]].contains(value)
-              case _ => println("Entered here : " + v.toString); v.toString == value
+              case v1: List[Any] => v1.asInstanceOf[List[String]].contains(value)
+              case _ => v.toString == value
             }
             if (mtch) result += innerMap
           }
         }
       }
     }
-    result
+    result.toArray
   }
 }
 

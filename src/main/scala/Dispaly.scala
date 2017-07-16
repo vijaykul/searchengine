@@ -41,13 +41,15 @@ object Display {
           val column = scala.io.StdIn.readLine("Enter search term\n")
           val columnValue = scala.io.StdIn.readLine("Enter search value\n")
 
-          println("Name of the table is : " + allTables(table.toInt - 1))
-          println("value of clumn : " + column + " " + columnValue)
-
           val instance = Database.getInstance.getTableInstance(allTables(table.toInt-1))
-          instance.print
-          println(instance.select(column, columnValue.toInt))
-          println("-"*20)
+        //  printPretty(instance.select(column, columnValue))
+          for (all <- instance.select(column, columnValue)) {
+            val printFormat = "%-50s%s"
+            for ( (k,v) <- all) {
+              println(printFormat.format(k, v))
+            }
+            println("-"*30)
+          }
 
         case "2" =>
 
