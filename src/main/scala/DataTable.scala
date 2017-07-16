@@ -27,6 +27,8 @@ class Table[K, C, V] {
   //Json is stored as key, value pair.
   private val table =  collection.mutable.HashMap.empty[K, collection.mutable.HashMap[C, V]]
   private val columnHeaders = new collection.mutable.HashSet[C] ()
+  private val tableRelations = new ArrayBuffer[Relations] ()
+  private val colOrder = new ArrayBuffer[C] ()
 
   /** Updates the key-value pair of Json object
    *
@@ -37,10 +39,23 @@ class Table[K, C, V] {
    *  @param value value part of json object
    *
    */
-  def update(uniqueKey: K, column: C, value: V) = {
+  def update(uniqueKey: K, column: C, value: V):Unit = {
     this.table.getOrElseUpdate(uniqueKey, collection.mutable.HashMap.empty[C, V])(column) = value
     columnHeaders += column
   }
+
+  def update(column: C) = colOrder += column
+
+  /** Updates other table related parameters.
+   */
+
+  def update(relationDetails: Relations): Unit = {
+      tableRelations += relationDetails
+  }
+
+  /** Returns all the relationship details to other table
+   */
+  def relationWithOtherTable = tableRelations.toArray
 
   /** Runs through the whole table and dumps all the data.
    *  like : select * from <table>
@@ -60,6 +75,10 @@ class Table[K, C, V] {
 
   def colHeaders = columnHeaders.toList
 
+  /** Returns the column order
+   */
+
+  def columnOrder = colOrder.toList
 
   /** prints number of rows in the table
    */
@@ -82,7 +101,7 @@ class Table[K, C, V] {
           if (column == k) {
             val mtch =  value match {
               case v1: List[Any] => v1.asInstanceOf[List[String]].contains(value)
-              case _ => v.toString == value
+              case _ => v.toString == value.toString
             }
             if (mtch) result += innerMap
           }
