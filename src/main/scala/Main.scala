@@ -11,7 +11,12 @@ object searchEngine {
 
   def main(args: Array[String]) {
 
-    val config = ConfigFactory.load()
+    if ((args.length <= 0) || (args(0) == "")) {
+      println("!! Configuration file not provided as part of command line argument !!")
+      System.exit(1)
+    }
+
+    val config = ConfigFactory.parseFile(new File(args(0)))
     val tables = config.getConfigList("searchengine.tables")
     val list = tables.map(conf => Tables(conf.getString("name"), conf.getString("schema"), conf.getString("path"))).toList
     val db = Database.getInstance

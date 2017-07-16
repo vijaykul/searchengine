@@ -2,15 +2,23 @@ package searchengine
 
 import scala.util.matching.Regex
 
+/** All display functions are defined here.
+ */
+
 object Display {
 
-  val title = "Welcome to Zendesk Search Engine\nType 'quit' to exit any time, Press 'Enter' to continue"
-
+  // Below instruction works for all linux/unix flavor, but not tested for windows
   private def clearScreen = System.out.print("\033[H\033[2J")
 
+  // Fixed templated at the beginning of search page
+  val title = "Welcome to Zendesk Search Engine\nType 'quit' to exit any time, Press 'Enter' to continue"
   val infoString = "\n\n\tSelect the search option:\n\t * Press 1 to search Zendesk\n\t * Press 2 to view the searchable fields \n\t * Type 'quit' to exit"
 
+  /** Continuous running function, which accepts the instruction from
+   *  the user
+   */
   def run() = {
+
     clearScreen
     println(title)
 
@@ -29,8 +37,10 @@ object Display {
 
       consoleInput match {
 
+        // case to handle the 'quit' Instruction
         case "quit" => println("Good Day! Bye..."); System.exit(0)
 
+        // continue search option
         case "1" =>
           try {
             var count = 1
@@ -59,23 +69,24 @@ object Display {
             case e: scala.MatchError => println("Something went wrong in selections..\n Please try again")
           }
 
-        case "2" =>
+          // Lists all the searchable fields
+          case "2" =>
 
-          val header = "Search %s with:"
-          val allTables = Database.getInstance.listTables
-          for (table <- allTables) {
-            println("-"*30)
-            println(header.format(table) + "\n")
-            val instance = Database.getInstance.getTableInstance(table)
-            for (column <- instance.colHeaders) {
-              println(column)
+            val header = "Search %s with:"
+            val allTables = Database.getInstance.listTables
+            for (table <- allTables) {
+              println("-"*30)
+              println(header.format(table) + "\n")
+              val instance = Database.getInstance.getTableInstance(table)
+              for (column <- instance.columnOrder) {
+                println(column)
+              }
+              println("\n")
             }
-            println("\n")
-          }
 
-        case "help" => println(infoString)
+            case "help" => println(infoString)
 
-        case _ => println("!!! Invalid selection !!!\nPlease follow the instruction provided above...\nOr enter 'help'")
+            case _ => println("!!! Invalid selection !!!\nPlease follow the instruction provided above...\nOr enter 'help'")
 
       }
     }
@@ -105,7 +116,7 @@ object Display {
           case v1: List[Any] =>
             var tmp = "["
             for (itr  <- v1.asInstanceOf[List[String]]) {
-              tmp = tmp + itr + ", "
+              tmp = tmp + "\"" + itr + "\"" + ", "
             }
             tmp.dropRight(2) + "]"
           case _ => v
@@ -132,6 +143,6 @@ object Display {
         }
       }
       println("-"*30)
+      }
     }
   }
-}
