@@ -7,7 +7,7 @@ import java.io._
 case class Tables(name: String, schema: String, path: String)
 case class Relations(source: String, destination: String, input: String, lookup: String, mapping: String, output: String)
 
-object searchEngine {
+object SearchEngine {
 
   def main(args: Array[String]) {
 

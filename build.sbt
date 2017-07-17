@@ -6,9 +6,7 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-feature"),
   logLevel := Level.Info,
-  resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-  resolvers += "mapr-releases" at "http://repository.mapr.com/maven/",
-  resolvers += "emueller-bintray" at "http://dl.bintray.com/emueller/maven"
+  resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 )
 
 lazy val root = (project in file(".")).
@@ -17,6 +15,6 @@ settings(
   name := "Json database search engine",
   libraryDependencies ++= commonDeps,
     
-  mainClass in assembly := Some("searchEngine"),
+  mainClass in assembly := Some("SearchEngine"),
   assemblyJarName in assembly := "searchEngine.jar"
 )
