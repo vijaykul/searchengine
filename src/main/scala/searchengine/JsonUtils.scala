@@ -25,18 +25,13 @@ object JsonUtils {
       throw new IOException("Json file path invalid");
     }
     // parse the json file
-    try {
+    val json = JSON.parseFull(scala.io.Source.fromFile(jsonFile).getLines.mkString)
 
-      val json = JSON.parseFull(scala.io.Source.fromFile(jsonFile).getLines.mkString)
-
-      json match {
-        case Some(data) => return data
-        case None => new IOException("Json Parse failed")
-      }
-    } catch {
-      case ex: IOException => println(ex.getMessage)
-      case all: Throwable => println("Some unknow exception : " + all); throw(all)
+    json match {
+      case Some(data) => return data
+      case None => return null
     }
+
     null
   }
 

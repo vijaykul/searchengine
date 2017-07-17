@@ -11,19 +11,22 @@ object searchEngine {
 
   def main(args: Array[String]) {
 
-    if ((args.length <= 0) || (args(0) == "")) {
-      println("!! Configuration file not provided as part of command line argument !!")
-      System.exit(1)
+    // check for configuration file
+    if (args.length <= 0) {
+      throw new RuntimeException("Configuration file not provided as a part of cli")
     }
 
+    // Loads the configuration file.
     val config = ConfigFactory.parseFile(new File(args(0)))
     val tables = config.getConfigList("searchengine.tables")
     val list = tables.map(conf => Tables(conf.getString("name"), conf.getString("schema"), conf.getString("path"))).toList
     val db = Database.getInstance
 
+    //This loops for all the configured tables in the configuration file
     for (entry <- list) {
       val table = Table.empty[String, Any, Any]
 
+      // Load the schema file for the table in process
       try {
         for (colName <- scala.io.Source.fromFile(entry.schema).getLines) {
             table.update(colName)
@@ -34,34 +37,41 @@ object searchEngine {
 
       val jsonObj = JsonUtils.parseJson(entry.path)
 
+      // Check if the JSON file is empty??
       if (jsonObj == null) {
         throw new RuntimeException("Json file [" + entry.path + "] is empty.. Hence existing")
       }
 
+      //loads all the json objects into table mapped to a uniqueId
       var uniqueId = 1
       jsonObj.asInstanceOf[List[Map[Any, Any]]] map {
         jObj => jObj map {
           case (k, v) => table.update(uniqueId.toString, k, v)}; uniqueId = uniqueId + 1
       }
+      //Register the table into data base
       db.register(entry.name, table)
     }
 
+    // Here all the cross table relationships are loaded into their respective 
+    // tables.
     val tableRelations = config.getConfigList("searchengine.relations")
     val relationList = tableRelations.map(conf =>
         Relations(
-          conf.getString("source"),
-          conf.getString("destination"),
-          conf.getString("input"),
-          conf.getString("lookup"),
-          conf.getString("mapping"),
-          conf.getString("output"))
+          conf.getString("source"),     // Source table name
+          conf.getString("destination"),// Destination table name
+          conf.getString("input"),      // Source table column name
+          conf.getString("lookup"),     // Destination table column name
+          conf.getString("mapping"),    
+          conf.getString("output"))     // output name
         ).toList
 
+    // Loading the relations details in their respective tables
     for (entry <- relationList) {
       val srcTable = Database.getInstance.getTableInstance(entry.source)
       srcTable.update(entry)
     }
 
+    // Handles the user inputs.
     Display.run
   }
 }

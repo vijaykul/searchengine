@@ -99,9 +99,9 @@ class Table[K, C, V] {
       innerMap map {
         case (k, v) => {
           if (column == k) {
-            val mtch =  value match {
-              case v1: List[Any] => v1.asInstanceOf[List[String]].contains(value)
-              case _ => v.toString == value.toString
+            val mtch =  v match {
+              case v1: List[Any] => v1.asInstanceOf[List[String]].contains(value.toString.trim)
+              case _ => v.toString.trim == value.toString.trim
             }
             if (mtch) result += innerMap
           }
