@@ -132,7 +132,7 @@ sample schema files are @path _schema/ticket.schema_
 
 The Search application can be launched using below commands
 
-Build the application with:
+Build the application from base folder containing _build.sbt_:
 ```
 $ sbt package
 ```
