@@ -40,6 +40,7 @@ Ubuntu and other Debian-based distributions
 
 For Scala Installation:
 ```
+$ sudo apt-get update
 $ sudo apt-get install scala
 ```
 For SBT Installation follow the instruction metioned in the below link:
@@ -137,7 +138,7 @@ $ sbt package
 ```
 Running the application
 ```
-scala <path of jar>/json-database-search-engine_2.11-1.0.0.jar ./conf/application.conf
+$ scala <path of jar>/json-database-search-engine_2.11-1.0.0.jar ./conf/application.conf
 ```
 Running the unit test using ScalaTest:
 ```
